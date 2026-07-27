@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CustomFieldDefinitionController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\TenantController;
@@ -26,6 +27,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/outlets/{outletId}/sections/{sectionId}', [SectionController::class, 'destroy']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
+
+        Route::get('/custom-field-definitions', [CustomFieldDefinitionController::class, 'index']);
+        Route::post('/custom-field-definitions', [CustomFieldDefinitionController::class, 'store']);
+        Route::delete('/custom-field-definitions/{id}', [CustomFieldDefinitionController::class, 'destroy']);
     });
 
     Route::middleware('role:owner')->group(function () {
