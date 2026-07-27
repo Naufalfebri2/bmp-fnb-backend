@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CustomFieldDefinitionController;
+use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\TenantController;
@@ -25,6 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/outlets/{outletId}/sections', [SectionController::class, 'store']);
         Route::put('/outlets/{outletId}/sections/{sectionId}', [SectionController::class, 'update']);
         Route::delete('/outlets/{outletId}/sections/{sectionId}', [SectionController::class, 'destroy']);
+
+        Route::get('/sections/{sectionId}/ingredients', [IngredientController::class, 'index']);
+        Route::post('/sections/{sectionId}/ingredients', [IngredientController::class, 'store']);
+        Route::put('/sections/{sectionId}/ingredients/{ingredientId}', [IngredientController::class, 'update']);
+        Route::delete('/sections/{sectionId}/ingredients/{ingredientId}', [IngredientController::class, 'destroy']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
