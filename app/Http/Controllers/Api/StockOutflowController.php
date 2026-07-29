@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\DailyStock;
+use App\Services\DailyStockCalculationService;
 use App\Services\MenuAvailabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -60,7 +61,7 @@ class StockOutflowController extends Controller
             'quantity' => $request->quantity,
         ]);
 
-        $this->recalculateExpectedClosingStock($dailyStock);
+        DailyStockCalculationService::recalculate($dailyStock);
 
         MenuAvailabilityService::sync($dailyStock->ingredient);
 
@@ -103,15 +104,6 @@ class StockOutflowController extends Controller
         ]);
     }
 
-    private function recalculateExpectedClosingStock(DailyStock $dailyStock): void
-    {
-        $totalOutflow = $dailyStock->stockOutflows()->sum('quantity');
-
-        $dailyStock->update([
-            'expected_closing_stock' => $dailyStock->opening_stock - $totalOutflow,
-        ]);
-    }
-
     private function findOwnedDailyStock(Request $request, string $dailyStockId): ?DailyStock
     {
         return DailyStock::whereHas('ingredient.section.outlet', function ($query) use ($request) {
@@ -119,4 +111,3 @@ class StockOutflowController extends Controller
         })->find($dailyStockId);
     }
 }
-
