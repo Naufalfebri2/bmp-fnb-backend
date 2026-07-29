@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Ingredient;
 use App\Models\Section;
 use App\Services\CustomFieldValidator;
+use App\Services\MenuAvailabilityService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -21,6 +22,24 @@ class IngredientController extends Controller
         }
 
         return response()->json($section->ingredients);
+    }
+
+    public function lowStock(Request $request)
+    {
+        $ingredients = Ingredient::whereHas('section.outlet', function ($query) use ($request) {
+            $query->where('tenant_id', $request->user()->tenant_id);
+        })
+            ->with(['section', 'dailyStocks' => function ($query) {
+                $query->orderBy('date', 'desc')->limit(1);
+            }])
+            ->get()
+            ->filter(function ($ingredient) {
+                $currentStock = MenuAvailabilityService::getCurrentStock($ingredient);
+                return $currentStock !== null && $currentStock <= $ingredient->alert_threshold;
+            })
+            ->values();
+
+        return response()->json($ingredients);
     }
 
     public function store(Request $request, string $sectionId)
@@ -121,6 +140,8 @@ class IngredientController extends Controller
         }
 
         $ingredient->update($updateData);
+
+        MenuAvailabilityService::sync($ingredient);
 
         return response()->json([
             'message' => 'Ingredient updated successfully',
