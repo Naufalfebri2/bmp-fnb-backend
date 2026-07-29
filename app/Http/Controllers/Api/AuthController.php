@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 
 class AuthController extends Controller
 {
@@ -22,7 +21,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validasi gagal',
+                'message' => 'Validation failed',
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -42,7 +41,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Registrasi berhasil',
+            'message' => 'Registration successful',
             'tenant' => $tenant,
             'user' => $user,
             'token' => $token,
@@ -58,7 +57,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Validasi gagal',
+                'message' => 'Validation failed',
                 'errors' => $validator->errors(),
             ], 422);
         }
@@ -67,14 +66,14 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password_hash)) {
             return response()->json([
-                'message' => 'Email atau password salah',
+                'message' => 'Invalid email or password',
             ], 401);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Login berhasil',
+            'message' => 'Login successful',
             'user' => $user,
             'token' => $token,
         ]);
@@ -85,7 +84,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logout berhasil',
+            'message' => 'Logout successful',
         ]);
     }
 
