@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Employee;
+use App\Models\ShiftSchedule;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Employee;
-
 
 class Attendance extends Model
 {
@@ -17,6 +17,7 @@ class Attendance extends Model
 
     protected $fillable = [
         'employee_id',
+        'shift_schedule_id',
         'date',
         'check_in_time',
         'check_out_time',
@@ -38,5 +39,10 @@ class Attendance extends Model
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
+    }
+
+    public function shiftSchedule(): BelongsTo
+    {
+        return $this->belongsTo(ShiftSchedule::class);
     }
 }
