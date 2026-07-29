@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Ingredient;
+use App\Models\User;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ class StockAdjustment extends Model
         'date',
         'adjustment_quantity',
         'reason',
+        'adjusted_by',
     ];
 
     protected $casts = [
@@ -26,5 +28,10 @@ class StockAdjustment extends Model
     public function ingredient(): BelongsTo
     {
         return $this->belongsTo(Ingredient::class);
+    }
+
+    public function adjustedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'adjusted_by');
     }
 }
