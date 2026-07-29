@@ -1,16 +1,21 @@
 <?php
 
+use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CashAccountController;
 use App\Http\Controllers\Api\CashTransactionController;
 use App\Http\Controllers\Api\ClosingSummaryController;
 use App\Http\Controllers\Api\CustomFieldDefinitionController;
 use App\Http\Controllers\Api\DailyStockController;
+use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\SectionController;
+use App\Http\Controllers\Api\ShiftController;
+use App\Http\Controllers\Api\ShiftScheduleController;
+use App\Http\Controllers\Api\ShiftSwapRequestController;
 use App\Http\Controllers\Api\StockAdjustmentController;
 use App\Http\Controllers\Api\StockOutflowController;
 use App\Http\Controllers\Api\SupplierController;
@@ -72,6 +77,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/cash-accounts/{cashAccountId}/transactions', [CashTransactionController::class, 'store']);
 
         Route::get('/sections/{sectionId}/closing-summary', [ClosingSummaryController::class, 'section']);
+
+        Route::get('/sections/{sectionId}/employees', [EmployeeController::class, 'index']);
+        Route::post('/sections/{sectionId}/employees', [EmployeeController::class, 'store']);
+        Route::put('/sections/{sectionId}/employees/{employeeId}', [EmployeeController::class, 'update']);
+        Route::delete('/sections/{sectionId}/employees/{employeeId}', [EmployeeController::class, 'destroy']);
+
+        Route::get('/sections/{sectionId}/shifts', [ShiftController::class, 'index']);
+        Route::post('/sections/{sectionId}/shifts', [ShiftController::class, 'store']);
+        Route::put('/sections/{sectionId}/shifts/{shiftId}', [ShiftController::class, 'update']);
+        Route::delete('/sections/{sectionId}/shifts/{shiftId}', [ShiftController::class, 'destroy']);
+
+        Route::get('/employees/{employeeId}/shift-schedules', [ShiftScheduleController::class, 'index']);
+        Route::post('/employees/{employeeId}/shift-schedules', [ShiftScheduleController::class, 'store']);
+        Route::delete('/employees/{employeeId}/shift-schedules/{scheduleId}', [ShiftScheduleController::class, 'destroy']);
+
+        Route::get('/shift-swap-requests', [ShiftSwapRequestController::class, 'index']);
+        Route::post('/shift-swap-requests', [ShiftSwapRequestController::class, 'store']);
+        Route::put('/shift-swap-requests/{swapRequestId}/approve', [ShiftSwapRequestController::class, 'approve']);
+        Route::put('/shift-swap-requests/{swapRequestId}/reject', [ShiftSwapRequestController::class, 'reject']);
+
+        Route::get('/employees/{employeeId}/attendance', [AttendanceController::class, 'index']);
+        Route::post('/employees/{employeeId}/attendance/check-in', [AttendanceController::class, 'checkIn']);
+        Route::post('/employees/{employeeId}/attendance/check-out', [AttendanceController::class, 'checkOut']);
+        Route::post('/employees/{employeeId}/attendance/mark-status', [AttendanceController::class, 'markStatus']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
