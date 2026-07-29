@@ -22,6 +22,13 @@ class Outlet extends Model
         'tenant_id',
         'name',
         'recording_mode',
+        'latitude',
+        'longitude',
+    ];
+
+    protected $casts = [
+        'latitude' => 'decimal:8',
+        'longitude' => 'decimal:8',
     ];
 
     public function tenant(): BelongsTo

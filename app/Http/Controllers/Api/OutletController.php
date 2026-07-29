@@ -23,6 +23,8 @@ class OutletController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'recording_mode' => 'nullable|in:simple,detail',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
         ]);
 
         if ($validator->fails()) {
@@ -36,6 +38,8 @@ class OutletController extends Controller
             'tenant_id' => $request->user()->tenant_id,
             'name' => $request->name,
             'recording_mode' => $request->recording_mode ?? 'simple',
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
 
         return response()->json([
@@ -68,6 +72,8 @@ class OutletController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:100',
             'recording_mode' => 'sometimes|in:simple,detail',
+            'latitude' => 'sometimes|nullable|numeric|between:-90,90',
+            'longitude' => 'sometimes|nullable|numeric|between:-180,180',
         ]);
 
         if ($validator->fails()) {
@@ -77,7 +83,7 @@ class OutletController extends Controller
             ], 422);
         }
 
-        $outlet->update($request->only(['name', 'recording_mode']));
+        $outlet->update($request->only(['name', 'recording_mode', 'latitude', 'longitude']));
 
         return response()->json([
             'message' => 'Outlet updated successfully',
