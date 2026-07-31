@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 class AttendanceController extends Controller
 {
     private const GEOFENCE_RADIUS_METERS = 100;
+    private const MINIMUM_MONTHS_FOR_LEAVE = 12;
 
     public function index(Request $request, string $employeeId)
     {
@@ -211,6 +212,21 @@ class AttendanceController extends Controller
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
             ], 422);
+        }
+
+        if ($request->status === 'leave') {
+            $monthsWorked = $employee->start_date->diffInMonths($request->date);
+
+            if ($monthsWorked < self::MINIMUM_MONTHS_FOR_LEAVE) {
+                return response()->json([
+                    'message' => 'Employee is not yet eligible for leave (requires 12 months of employment)',
+                    'errors' => [
+                        'status' => [
+                            "This employee has worked for {$monthsWorked} month(s). Leave requires at least " . self::MINIMUM_MONTHS_FOR_LEAVE . " months. Use 'time_off' for urgent unpaid absence instead.",
+                        ],
+                    ],
+                ], 422);
+            }
         }
 
         if ($employee->attendance()->where('date', $request->date)->exists()) {
