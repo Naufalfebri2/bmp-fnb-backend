@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\OutletController;
+use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\ShiftController;
@@ -101,6 +102,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/employees/{employeeId}/attendance/check-in', [AttendanceController::class, 'checkIn']);
         Route::post('/employees/{employeeId}/attendance/check-out', [AttendanceController::class, 'checkOut']);
         Route::post('/employees/{employeeId}/attendance/mark-status', [AttendanceController::class, 'markStatus']);
+
+        Route::get('/payroll-periods', [PayrollController::class, 'index']);
+        Route::post('/payroll-periods/generate', [PayrollController::class, 'generate']);
+        Route::get('/payroll-periods/{payrollPeriodId}', [PayrollController::class, 'show']);
+        Route::put('/payroll-periods/{payrollPeriodId}/status', [PayrollController::class, 'updateStatus']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
