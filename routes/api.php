@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\DailyStockController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\MenuController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\PurchaseOrderController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Api\ShiftSwapRequestController;
 use App\Http\Controllers\Api\StockAdjustmentController;
 use App\Http\Controllers\Api\StockOutflowController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\TableController;
 use App\Http\Controllers\Api\TenantController;
 use Illuminate\Support\Facades\Route;
 
@@ -107,6 +109,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/payroll-periods/generate', [PayrollController::class, 'generate']);
         Route::get('/payroll-periods/{payrollPeriodId}', [PayrollController::class, 'show']);
         Route::put('/payroll-periods/{payrollPeriodId}/status', [PayrollController::class, 'updateStatus']);
+
+        Route::get('/sections/{sectionId}/tables', [TableController::class, 'index']);
+        Route::post('/sections/{sectionId}/tables', [TableController::class, 'store']);
+        Route::put('/sections/{sectionId}/tables/{tableId}', [TableController::class, 'update']);
+        Route::put('/sections/{sectionId}/tables/{tableId}/regenerate-qr', [TableController::class, 'regenerateQrCode']);
+        Route::delete('/sections/{sectionId}/tables/{tableId}', [TableController::class, 'destroy']);
+
+        Route::get('/outlets/{outletId}/orders', [OrderController::class, 'index']);
+        Route::post('/outlets/{outletId}/orders', [OrderController::class, 'store']);
+        Route::get('/outlets/{outletId}/orders/{orderId}', [OrderController::class, 'show']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/items', [OrderController::class, 'addItems']);
+        Route::put('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/split-label', [OrderController::class, 'assignSplitLabel']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/refund', [OrderController::class, 'refundItem']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/cancel-all', [OrderController::class, 'cancelAll']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/pay', [OrderController::class, 'pay']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
