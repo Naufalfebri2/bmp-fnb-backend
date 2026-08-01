@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\CashAccount;
 use App\Models\Menu;
+use App\Models\Order;
 use App\Models\PurchaseOrder;
 use App\Models\Section;
 use App\Models\TableBooking;
@@ -59,5 +60,10 @@ class Outlet extends Model
     public function tableBookings(): HasMany
     {
         return $this->hasMany(TableBooking::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

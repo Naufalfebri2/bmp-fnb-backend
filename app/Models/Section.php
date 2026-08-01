@@ -6,6 +6,7 @@ use App\Models\Employee;
 use App\Models\Ingredient;
 use App\Models\Outlet;
 use App\Models\Shift;
+use App\Models\Table;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,5 +40,10 @@ class Section extends Model
     public function shifts(): HasMany
     {
         return $this->hasMany(Shift::class);
+    }
+
+    public function tables(): HasMany
+    {
+        return $this->hasMany(Table::class);
     }
 }
