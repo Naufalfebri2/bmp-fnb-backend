@@ -22,13 +22,13 @@ class DailyStockCalculationService
         $totalOutflow = $dailyStock->stockOutflows()->sum('quantity');
 
         $totalAdjustment = StockAdjustment::where('ingredient_id', $dailyStock->ingredient_id)
-            ->where('date', $dailyStock->date)
+            ->whereDate('date', $dailyStock->date)
             ->sum('adjustment_quantity');
 
         $totalStockIn = PurchaseOrderItem::where('ingredient_id', $dailyStock->ingredient_id)
             ->whereHas('purchaseOrder', function ($query) use ($dailyStock) {
                 $query->where('status', 'received')
-                    ->where('received_at', $dailyStock->date);
+                    ->whereDate('received_at', $dailyStock->date);
             })
             ->sum('quantity');
 
