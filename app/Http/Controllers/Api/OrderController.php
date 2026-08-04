@@ -24,10 +24,13 @@ class OrderController extends Controller
             return response()->json(['message' => 'Outlet not found'], 404);
         }
 
-        $orders = $outlet->orders()
-            ->with(['table', 'items.menu', 'payments'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = $outlet->orders()->with(['table', 'items.menu', 'payments']);
+
+        if ($request->boolean('unacknowledged_only')) {
+            $query->whereNull('acknowledged_at');
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json($orders);
     }
@@ -93,6 +96,8 @@ class OrderController extends Controller
                 'order_type' => 'dine_in',
                 'status' => 'open',
                 'opened_by' => $request->user()->id,
+                'acknowledged_at' => now(),
+                'acknowledged_by' => $request->user()->id,
             ]);
 
             foreach ($request->items as $item) {
@@ -112,6 +117,31 @@ class OrderController extends Controller
             'message' => 'Order created successfully',
             'order' => $order->load(['table', 'items.menu']),
         ], 201);
+    }
+
+    public function acknowledge(Request $request, string $outletId, string $orderId)
+    {
+        $order = $this->findOwnedOrder($request, $outletId, $orderId);
+
+        if (!$order) {
+            return response()->json(['message' => 'Order not found'], 404);
+        }
+
+        if ($order->acknowledged_at !== null) {
+            return response()->json([
+                'message' => 'This order has already been acknowledged',
+            ], 422);
+        }
+
+        $order->update([
+            'acknowledged_at' => now(),
+            'acknowledged_by' => $request->user()->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Order acknowledged successfully',
+            'order' => $order->fresh(),
+        ]);
     }
 
     public function addItems(Request $request, string $outletId, string $orderId)
