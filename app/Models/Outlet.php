@@ -25,11 +25,13 @@ class Outlet extends Model
         'recording_mode',
         'latitude',
         'longitude',
+        'qr_ordering_enabled',
     ];
 
     protected $casts = [
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
+        'qr_ordering_enabled' => 'boolean',
     ];
 
     public function tenant(): BelongsTo

@@ -25,6 +25,12 @@ class Order extends Model
         'order_type',
         'status',
         'opened_by',
+        'acknowledged_at',
+        'acknowledged_by',
+    ];
+
+    protected $casts = [
+        'acknowledged_at' => 'datetime',
     ];
 
     public function outlet(): BelongsTo
@@ -40,6 +46,11 @@ class Order extends Model
     public function openedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'opened_by');
+    }
+
+    public function acknowledgedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'acknowledged_by');
     }
 
     public function items(): HasMany
