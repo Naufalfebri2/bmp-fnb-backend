@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\PublicOrderController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\ShiftController;
@@ -27,6 +28,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware('throttle:30,1')->prefix('public')->group(function () {
+    Route::get('/tables/{qrCode}/menu', [PublicOrderController::class, 'showMenu']);
+    Route::post('/tables/{qrCode}/order', [PublicOrderController::class, 'store']);
+    Route::get('/orders/{orderId}/status', [PublicOrderController::class, 'showStatus']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -119,6 +126,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/outlets/{outletId}/orders', [OrderController::class, 'index']);
         Route::post('/outlets/{outletId}/orders', [OrderController::class, 'store']);
         Route::get('/outlets/{outletId}/orders/{orderId}', [OrderController::class, 'show']);
+        Route::put('/outlets/{outletId}/orders/{orderId}/acknowledge', [OrderController::class, 'acknowledge']);
         Route::post('/outlets/{outletId}/orders/{orderId}/items', [OrderController::class, 'addItems']);
         Route::put('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/split-label', [OrderController::class, 'assignSplitLabel']);
         Route::post('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/refund', [OrderController::class, 'refundItem']);
