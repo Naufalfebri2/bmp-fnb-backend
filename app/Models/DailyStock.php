@@ -21,6 +21,8 @@ class DailyStock extends Model
         'expected_closing_stock',
         'actual_closing_stock',
         'variance',
+        'stock_in',
+        'adjustment_quantity',
     ];
 
     protected $casts = [
