@@ -22,15 +22,24 @@ class Order extends Model
         'table_id',
         'order_number',
         'customer_name',
+        'customer_phone',
         'order_type',
         'status',
         'opened_by',
         'acknowledged_at',
         'acknowledged_by',
+        'requested_pickup_time',
+        'source_platform',
+        'platform_order_id',
+        'input_method',
+        'courier_status',
+        'courier_picked_up_at',
     ];
 
     protected $casts = [
         'acknowledged_at' => 'datetime',
+        'requested_pickup_time' => 'datetime',
+        'courier_picked_up_at' => 'datetime',
     ];
 
     public function outlet(): BelongsTo
