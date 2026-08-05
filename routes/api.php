@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OrderItemController;
+use App\Http\Controllers\Api\OrderPaymentController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\PublicOrderController;
@@ -127,11 +129,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/outlets/{outletId}/orders', [OrderController::class, 'store']);
         Route::get('/outlets/{outletId}/orders/{orderId}', [OrderController::class, 'show']);
         Route::put('/outlets/{outletId}/orders/{orderId}/acknowledge', [OrderController::class, 'acknowledge']);
-        Route::post('/outlets/{outletId}/orders/{orderId}/items', [OrderController::class, 'addItems']);
-        Route::put('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/split-label', [OrderController::class, 'assignSplitLabel']);
-        Route::post('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/refund', [OrderController::class, 'refundItem']);
-        Route::post('/outlets/{outletId}/orders/{orderId}/cancel-all', [OrderController::class, 'cancelAll']);
-        Route::post('/outlets/{outletId}/orders/{orderId}/pay', [OrderController::class, 'pay']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/items', [OrderItemController::class, 'addItems']);
+        Route::put('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/split-label', [OrderItemController::class, 'assignSplitLabel']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/refund', [OrderPaymentController::class, 'refundItem']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/cancel-all', [OrderPaymentController::class, 'cancelAll']);
+        Route::post('/outlets/{outletId}/orders/{orderId}/pay', [OrderPaymentController::class, 'pay']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
