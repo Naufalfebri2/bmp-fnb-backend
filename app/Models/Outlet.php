@@ -26,12 +26,14 @@ class Outlet extends Model
         'latitude',
         'longitude',
         'qr_ordering_enabled',
+        'online_pickup_enabled',
     ];
 
     protected $casts = [
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
         'qr_ordering_enabled' => 'boolean',
+        'online_pickup_enabled' => 'boolean',
     ];
 
     public function tenant(): BelongsTo
