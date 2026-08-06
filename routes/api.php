@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BookingEventController;
+use App\Http\Controllers\Api\BookingStatusController;
 use App\Http\Controllers\Api\CashAccountController;
 use App\Http\Controllers\Api\CashTransactionController;
 use App\Http\Controllers\Api\ClosingSummaryController;
@@ -27,6 +29,7 @@ use App\Http\Controllers\Api\ShiftSwapRequestController;
 use App\Http\Controllers\Api\StockAdjustmentController;
 use App\Http\Controllers\Api\StockOutflowController;
 use App\Http\Controllers\Api\SupplierController;
+use App\Http\Controllers\Api\TableBookingController;
 use App\Http\Controllers\Api\TableController;
 use App\Http\Controllers\Api\TenantController;
 use Illuminate\Support\Facades\Route;
@@ -143,6 +146,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::post('/outlets/{outletId}/delivery-orders', [OrderDeliveryController::class, 'store']);
         Route::put('/outlets/{outletId}/delivery-orders/{orderId}/courier-status', [OrderDeliveryController::class, 'updateCourierStatus']);
+
+        Route::get('/outlets/{outletId}/bookings', [TableBookingController::class, 'index']);
+        Route::post('/outlets/{outletId}/bookings', [TableBookingController::class, 'store']);
+        Route::get('/outlets/{outletId}/bookings/{bookingId}', [TableBookingController::class, 'show']);
+        Route::post('/outlets/{outletId}/bookings/event', [BookingEventController::class, 'store']);
+        Route::put('/outlets/{outletId}/bookings/{bookingId}/advance', [BookingStatusController::class, 'advance']);
+        Route::put('/outlets/{outletId}/bookings/{bookingId}/cancel', [BookingStatusController::class, 'cancel']);
+        Route::put('/outlets/{outletId}/bookings/{bookingId}/no-show', [BookingStatusController::class, 'markNoShow']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
