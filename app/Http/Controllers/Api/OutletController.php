@@ -26,6 +26,7 @@ class OutletController extends Controller
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
             'qr_ordering_enabled' => 'nullable|boolean',
+            'online_pickup_enabled' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -42,6 +43,7 @@ class OutletController extends Controller
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             'qr_ordering_enabled' => $request->boolean('qr_ordering_enabled'),
+            'online_pickup_enabled' => $request->boolean('online_pickup_enabled'),
         ]);
 
         return response()->json([
@@ -77,6 +79,7 @@ class OutletController extends Controller
             'latitude' => 'sometimes|nullable|numeric|between:-90,90',
             'longitude' => 'sometimes|nullable|numeric|between:-180,180',
             'qr_ordering_enabled' => 'sometimes|boolean',
+            'online_pickup_enabled' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -86,7 +89,14 @@ class OutletController extends Controller
             ], 422);
         }
 
-        $outlet->update($request->only(['name', 'recording_mode', 'latitude', 'longitude', 'qr_ordering_enabled']));
+        $outlet->update($request->only([
+            'name',
+            'recording_mode',
+            'latitude',
+            'longitude',
+            'qr_ordering_enabled',
+            'online_pickup_enabled',
+        ]));
 
         return response()->json([
             'message' => 'Outlet updated successfully',
