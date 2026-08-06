@@ -11,11 +11,14 @@ use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\IngredientController;
 use App\Http\Controllers\Api\MenuController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\OrderDeliveryController;
 use App\Http\Controllers\Api\OrderItemController;
 use App\Http\Controllers\Api\OrderPaymentController;
+use App\Http\Controllers\Api\OrderPrepController;
 use App\Http\Controllers\Api\OutletController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\PublicOrderController;
+use App\Http\Controllers\Api\PublicPickupOrderController;
 use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\SectionController;
 use App\Http\Controllers\Api\ShiftController;
@@ -34,6 +37,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('throttle:30,1')->prefix('public')->group(function () {
     Route::get('/tables/{qrCode}/menu', [PublicOrderController::class, 'showMenu']);
     Route::post('/tables/{qrCode}/order', [PublicOrderController::class, 'store']);
+    Route::get('/outlets/{outletId}/pickup-menu', [PublicPickupOrderController::class, 'showMenu']);
+    Route::post('/outlets/{outletId}/pickup-order', [PublicPickupOrderController::class, 'store']);
     Route::get('/orders/{orderId}/status', [PublicOrderController::class, 'showStatus']);
 });
 
@@ -131,9 +136,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/outlets/{outletId}/orders/{orderId}/acknowledge', [OrderController::class, 'acknowledge']);
         Route::post('/outlets/{outletId}/orders/{orderId}/items', [OrderItemController::class, 'addItems']);
         Route::put('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/split-label', [OrderItemController::class, 'assignSplitLabel']);
+        Route::put('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/prep-status', [OrderPrepController::class, 'updatePrepStatus']);
         Route::post('/outlets/{outletId}/orders/{orderId}/items/{orderItemId}/refund', [OrderPaymentController::class, 'refundItem']);
         Route::post('/outlets/{outletId}/orders/{orderId}/cancel-all', [OrderPaymentController::class, 'cancelAll']);
         Route::post('/outlets/{outletId}/orders/{orderId}/pay', [OrderPaymentController::class, 'pay']);
+
+        Route::post('/outlets/{outletId}/delivery-orders', [OrderDeliveryController::class, 'store']);
+        Route::put('/outlets/{outletId}/delivery-orders/{orderId}/courier-status', [OrderDeliveryController::class, 'updateCourierStatus']);
 
         Route::get('/tenant', [TenantController::class, 'show']);
 
