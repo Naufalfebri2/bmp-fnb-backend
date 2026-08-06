@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('booking_table_assignments', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->foreignUuid('booking_id')->constrained('table_bookings')->cascadeOnDelete();
+            $table->foreignUuid('table_id')->constrained('tables')->cascadeOnDelete();
+            $table->timestamps();
+
+            $table->unique(['booking_id', 'table_id']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('booking_table_assignments');
+    }
+};
