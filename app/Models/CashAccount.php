@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Outlet;
 use App\Models\CashTransaction;
+use App\Models\CashReconciliation;
 
 class CashAccount extends Model
 {
@@ -28,5 +29,10 @@ class CashAccount extends Model
     public function cashTransactions(): HasMany
     {
         return $this->hasMany(CashTransaction::class);
+    }
+
+    public function reconciliations(): HasMany
+    {
+        return $this->hasMany(CashReconciliation::class);
     }
 }
