@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Employee;
+use App\Models\Outlet;
 use App\Models\Tenant;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'tenant_id',
+        'outlet_id',
         'email',
         'password_hash',
         'role',
@@ -29,6 +31,11 @@ class User extends Authenticatable
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function outlet(): BelongsTo
+    {
+        return $this->belongsTo(Outlet::class);
     }
 
     public function employee(): BelongsTo
