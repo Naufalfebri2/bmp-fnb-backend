@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BookingEventController;
 use App\Http\Controllers\Api\BookingStatusController;
 use App\Http\Controllers\Api\CashAccountController;
+use App\Http\Controllers\Api\CashflowReportController;
+use App\Http\Controllers\Api\CashReconciliationController;
 use App\Http\Controllers\Api\CashTransactionController;
 use App\Http\Controllers\Api\ClosingSummaryController;
 use App\Http\Controllers\Api\CustomFieldDefinitionController;
@@ -32,6 +34,7 @@ use App\Http\Controllers\Api\SupplierController;
 use App\Http\Controllers\Api\TableBookingController;
 use App\Http\Controllers\Api\TableController;
 use App\Http\Controllers\Api\TenantController;
+use App\Http\Controllers\Api\UserManagementController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -91,10 +94,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/outlets/{outletId}/purchase-orders/{purchaseOrderId}', [PurchaseOrderController::class, 'show']);
         Route::put('/outlets/{outletId}/purchase-orders/{purchaseOrderId}/status', [PurchaseOrderController::class, 'updateStatus']);
 
-        Route::get('/outlets/{outletId}/cash-accounts', [CashAccountController::class, 'index']);
         Route::post('/outlets/{outletId}/cash-accounts', [CashAccountController::class, 'store']);
         Route::get('/cash-accounts/{cashAccountId}/transactions', [CashTransactionController::class, 'index']);
         Route::post('/cash-accounts/{cashAccountId}/transactions', [CashTransactionController::class, 'store']);
+
+        Route::get('/cashflow', [CashflowReportController::class, 'forTenant']);
 
         Route::get('/sections/{sectionId}/closing-summary', [ClosingSummaryController::class, 'section']);
 
@@ -162,7 +166,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/custom-field-definitions/{id}', [CustomFieldDefinitionController::class, 'destroy']);
     });
 
+    Route::middleware(['role:owner,admin,manager', 'outlet.scope'])->group(function () {
+        Route::get('/outlets/{outletId}/cash-accounts', [CashAccountController::class, 'index']);
+        Route::get('/outlets/{outletId}/cashflow', [CashflowReportController::class, 'forOutlet']);
+
+        Route::get('/cash-accounts/{cashAccountId}/cashflow', [CashflowReportController::class, 'forAccount']);
+        Route::get('/cash-accounts/{cashAccountId}/reconciliations', [CashReconciliationController::class, 'index']);
+        Route::post('/cash-accounts/{cashAccountId}/reconciliations', [CashReconciliationController::class, 'store']);
+    });
+
     Route::middleware('role:owner')->group(function () {
         Route::put('/tenant/settings', [TenantController::class, 'updateSettings']);
+
+        Route::post('/users/manager', [UserManagementController::class, 'createManager']);
+
+        Route::put('/cash-accounts/{cashAccountId}/reconciliations/{reconciliationId}/approve', [CashReconciliationController::class, 'approve']);
+        Route::put('/cash-accounts/{cashAccountId}/reconciliations/{reconciliationId}/reject', [CashReconciliationController::class, 'reject']);
     });
 });
